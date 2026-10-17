@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import NamedTuple, Optional
 import sqlite3
 from zoneinfo import ZoneInfo
+from pydantic import BaseModel
 
 
 class MessageKind(str, Enum):
@@ -37,7 +38,7 @@ class SpendStatus(str, Enum):
     INVALID_PERSON = "INVALID_PERSON"
 
 
-class SpendResult(NamedTuple):
+class SpendResult(BaseModel):
     status: SpendStatus
     person_id: str
     cost_requested: int
