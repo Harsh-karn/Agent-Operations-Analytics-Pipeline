@@ -1,4 +1,4 @@
-name: Tally CI Pipeline
+name: Agent Operations Analytics Pipeline CI
 
 on:
   push:

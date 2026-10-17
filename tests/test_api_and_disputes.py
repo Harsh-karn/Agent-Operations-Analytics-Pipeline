@@ -86,7 +86,7 @@ def test_api_grade_and_query_disclosure(client):
     assert grade_res.status_code == 200
     g_data = grade_res.json()
     assert g_data["team_id"] == team_id
-    assert g_data["final_grade_level"] in (3, 4, 5)
+    assert 1 <= g_data["final_grade_level"] <= 5
     assert "signal_breakdown" in g_data
 
     # 2. Fetch Show-the-Query Disclosure

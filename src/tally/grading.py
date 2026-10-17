@@ -1,5 +1,5 @@
 """
-Grading and Query Disclosure Engine for Tally.
+Grading and Query Disclosure Engine for Agent Operations Analytics Pipeline.
 
 Implements Phase 7 & 8:
 - Defensible team maturity grading

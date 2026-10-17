@@ -1,5 +1,5 @@
 """
-Tally reporting module.
+Agent Operations Analytics Pipeline reporting module.
 """
 
 from tally.reports.monthly import MonthlyReport, MonthlyReportGenerator

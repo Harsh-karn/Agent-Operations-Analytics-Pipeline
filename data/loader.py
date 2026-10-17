@@ -1,5 +1,5 @@
 """
-Dataset loader and database connection manager for Tally.
+Dataset loader and database connection manager for Agent Operations Analytics Pipeline.
 
 Supports loading synthetic or runtime logs into BigQuery or an embedded DuckDB
 instance for local testing, view verification, and zero-GCP-dependency execution.

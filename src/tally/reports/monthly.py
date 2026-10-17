@@ -1,5 +1,5 @@
 """
-Monthly Executive & Operational Report Generator for Tally.
+Monthly Executive & Operational Report Generator for Agent Operations Analytics Pipeline.
 
 Produces an actionable decision-oriented report:
 - What changed: Net hours saved range, cost, capital efficiency (hours per dollar)
@@ -230,7 +230,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
 
-    parser = argparse.ArgumentParser(description="Generate Tally Monthly Operational Report")
+    parser = argparse.ArgumentParser(description="Generate Agent Operations Analytics Pipeline Monthly Operational Report")
     parser.add_argument("--period", type=str, default="2026-09", help="Period in YYYY-MM format")
     parser.add_argument("--output", type=str, default=None, help="Optional output file path")
     args = parser.parse_args()

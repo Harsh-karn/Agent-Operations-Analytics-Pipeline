@@ -1,5 +1,5 @@
 """
-FastAPI Service for Tally: Agent Operations Analytics Pipeline.
+FastAPI Service for Agent Operations Analytics Pipeline.
 
 Exposes:
 - Interruption budget transactions & enforcement (POST /contact/budget/spend)

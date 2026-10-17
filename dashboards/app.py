@@ -1,5 +1,5 @@
 """
-Streamlit Interactive Operations Analytics Dashboard for Tally.
+Streamlit Interactive Operations Analytics Dashboard for Agent Operations Analytics Pipeline.
 
 Features:
 - Tab 1: Executive Value Ledger (Net Hours Saved, Ranges, Capital Efficiency)

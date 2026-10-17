@@ -1,5 +1,5 @@
 """
-Message Composer & Validator for Tally.
+Message Composer & Validator for Agent Operations Analytics Pipeline.
 
 Strictly enforces:
 1. 'Value Before Ask': Every outgoing notification must provide tangible value
@@ -84,7 +84,7 @@ class MessageComposer:
         asks_count: int = 1,
     ) -> ComposerValidationResult:
         """
-        Validates the dispatch against Tally's core composition rules:
+        Validates the dispatch against Agent Operations Analytics Pipeline core composition rules:
         1. No ask without a payload.
         2. At most one ask per message.
         3. Automatic down-throttle check.

@@ -1,5 +1,5 @@
 """
-Transactional Interruption Budget Engine for Tally.
+Transactional Interruption Budget Engine for Agent Operations Analytics Pipeline.
 
 Guarantees hard, code-enforced per-person interruption limits.
 No notification can be transmitted without an atomic authorization token from try_spend().

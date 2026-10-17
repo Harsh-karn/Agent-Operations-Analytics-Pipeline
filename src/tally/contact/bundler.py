@@ -1,5 +1,5 @@
 """
-Message Bundler for Tally.
+Message Bundler for Agent Operations Analytics Pipeline.
 
 Collects, deduplicates, and merges pending candidate agent messages into single dispatches.
 Prevents uncoordinated notification storms by dropping stale items and coalescing pings.

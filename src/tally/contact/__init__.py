@@ -1,5 +1,5 @@
 """
-Tally Contact Engine: Interruption Budgets, Bundling, Value-First Composition, and Channels.
+Agent Operations Analytics Pipeline Contact Engine: Interruption Budgets, Bundling, Value-First Composition, and Channels.
 """
 
 from tally.contact.budget import ContactBudgetManager, MessageKind, SpendResult, SpendStatus
