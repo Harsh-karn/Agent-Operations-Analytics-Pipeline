@@ -1,8 +1,8 @@
-# Tally: Agent Operations Analytics Pipeline
+# Agent Operations Analytics Pipeline
 
 > *"The value of the system is a measurement, not a claim, and every grade comes with the SQL that produced it."*
 
-Tally is an enterprise-grade measurement and contact layer for autonomous agents and generative AI workflows. It serves two critical operational responsibilities:
+Agent Operations Analytics Pipeline is an enterprise-grade measurement and contact layer for autonomous agents and generative AI workflows. It serves two critical operational responsibilities:
 
 1. **Intelligent Contact Layer**: Governs system-to-human communications with hard, transactionally enforced interruption budgets per person, quiet hours, message bundling into digestible dispatches, and a strict value-first composer ("no ask without a payload").
 2. **Measurement & Value Ledger**: Provides an audited ledger of human work absorbed by agents (with documented empirical baselines and confidence intervals), granular token-level cost attribution per run, and defensible team maturity grades computed from warehouse data where any grade can be contested through a show-the-query dispute endpoint.

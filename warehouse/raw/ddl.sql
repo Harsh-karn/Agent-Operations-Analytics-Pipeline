@@ -1,10 +1,10 @@
 -- =====================================================================
--- Tally Warehouse DDL (BigQuery Standard SQL)
+-- Agent Operations Analytics Pipeline Warehouse DDL (BigQuery Standard SQL)
 -- Raw ingest tables partitioned by date and clustered by team_id, agent_id
 -- =====================================================================
 
 -- 1. Teams Registry
-CREATE TABLE IF NOT EXISTS tally_raw.teams (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.teams (
     team_id STRING NOT NULL,
     name STRING NOT NULL,
     domain STRING NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.teams (
 );
 
 -- 2. People & Interruption Budget Limits
-CREATE TABLE IF NOT EXISTS tally_raw.people (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.people (
     person_id STRING NOT NULL,
     team_id STRING NOT NULL,
     name STRING NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.people (
 );
 
 -- 3. Agents Registry
-CREATE TABLE IF NOT EXISTS tally_raw.agents (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.agents (
     agent_id STRING NOT NULL,
     team_id STRING NOT NULL,
     name STRING NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.agents (
 );
 
 -- 4. Workflows Registry
-CREATE TABLE IF NOT EXISTS tally_raw.workflows (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.workflows (
     workflow_id STRING NOT NULL,
     team_id STRING NOT NULL,
     name STRING NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.workflows (
 );
 
 -- 5. Agent Empirical Baselines
-CREATE TABLE IF NOT EXISTS tally_raw.agent_baselines (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.agent_baselines (
     agent_id STRING NOT NULL,
     task_description STRING NOT NULL,
     baseline_minutes FLOAT64 NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.agent_baselines (
 );
 
 -- 6. Evaluation Benchmark Results
-CREATE TABLE IF NOT EXISTS tally_raw.eval_results (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.eval_results (
     eval_id STRING NOT NULL,
     agent_id STRING NOT NULL,
     test_suite_name STRING NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.eval_results (
 
 -- 7. Agent Execution Runs
 -- Partitioned by date of start_time, clustered by team_id and agent_id
-CREATE TABLE IF NOT EXISTS tally_raw.runs (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.runs (
     run_id STRING NOT NULL,
     agent_id STRING NOT NULL,
     team_id STRING NOT NULL,
@@ -83,7 +83,7 @@ CLUSTER BY team_id, agent_id;
 
 -- 8. Run Telemetry Events
 -- Partitioned by date of timestamp, clustered by run_id
-CREATE TABLE IF NOT EXISTS tally_raw.events (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.events (
     event_id STRING NOT NULL,
     run_id STRING NOT NULL,
     event_type STRING NOT NULL,
@@ -94,7 +94,7 @@ PARTITION BY DATE(timestamp)
 CLUSTER BY run_id;
 
 -- 9. Human Review Approvals (Gate Health)
-CREATE TABLE IF NOT EXISTS tally_raw.approvals (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.approvals (
     approval_id STRING NOT NULL,
     run_id STRING NOT NULL,
     person_id STRING NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.approvals (
 );
 
 -- 10. Reviewer Feedback
-CREATE TABLE IF NOT EXISTS tally_raw.reviewer_feedback (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.reviewer_feedback (
     feedback_id STRING NOT NULL,
     run_id STRING NOT NULL,
     person_id STRING NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.reviewer_feedback (
 );
 
 -- 11. Incidents & Rollbacks
-CREATE TABLE IF NOT EXISTS tally_raw.incidents (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.incidents (
     incident_id STRING NOT NULL,
     run_id STRING NOT NULL,
     team_id STRING NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS tally_raw.incidents (
 );
 
 -- 12. Contact Log & Delivery Attempts
-CREATE TABLE IF NOT EXISTS tally_raw.contact_attempts (
+CREATE TABLE IF NOT EXISTS agent_ops_raw.contact_attempts (
     attempt_id STRING NOT NULL,
     person_id STRING NOT NULL,
     agent_id STRING NOT NULL,

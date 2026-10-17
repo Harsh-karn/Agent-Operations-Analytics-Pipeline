@@ -1,4 +1,4 @@
-# 📊 Tally Operational & Value Ledger Report: 2026-09
+# 📊 Agent Operations Analytics Pipeline - Monthly Report: 2026-09
 > *Generated: 2026-10-17 18:59 UTC | Philosophy: Value is a measurement, not a claim.*
 
 ## 1. Executive Summary & Value Ledger

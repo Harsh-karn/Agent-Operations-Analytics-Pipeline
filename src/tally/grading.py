@@ -144,7 +144,7 @@ class GradeService:
         signals_sql = (views_dir / "team_signals.sql").read_text(encoding="utf-8")
 
         standalone_query = f"""-- =====================================================================
--- TALLY AUDIT QUERY: Defensible Grade for {team_id} (Period: {period})
+-- AGENT OPERATIONS ANALYTICS AUDIT QUERY: Defensible Grade for {team_id} (Period: {period})
 -- Rules Version: v1.0.0
 -- =====================================================================
 

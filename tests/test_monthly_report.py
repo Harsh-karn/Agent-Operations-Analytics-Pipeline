@@ -36,6 +36,6 @@ def test_monthly_report_generation():
         assert "owner" in a
 
     # Markdown content
-    assert "# 📊 Tally Operational & Value Ledger Report:" in report.markdown_content
+    assert "# 📊 Agent Operations Analytics Pipeline" in report.markdown_content
     assert "## 1. Executive Summary & Value Ledger" in report.markdown_content
     assert "## 5. Suggested Decisions for Immediate Action" in report.markdown_content

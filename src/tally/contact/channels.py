@@ -55,7 +55,7 @@ class SlackChannel(BaseChannel):
 
     def _dispatch(self, message: ComposedMessage, auth_token: str) -> Dict[str, Any]:
         payload = {
-            "text": f"Tally Dispatch: {message.kind.value}",
+            "text": f"Agent Operations Dispatch: {message.kind.value}",
             "blocks": [
                 {
                     "type": "section",

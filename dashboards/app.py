@@ -17,7 +17,7 @@ import streamlit as st
 
 # Page configuration
 st.set_page_config(
-    page_title="Tally: Agent Operations Analytics",
+    page_title="Agent Operations Analytics Pipeline",
     page_icon="⚖️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -51,8 +51,8 @@ def get_warehouse_connection():
 harness = get_warehouse_connection()
 
 # Sidebar Controls
-st.sidebar.title("⚖️ Tally Platform")
-st.sidebar.caption("Agent Operations & Value Analytics")
+st.sidebar.title("⚖️ Agent Operations")
+st.sidebar.caption("Analytics & Value Ledger Pipeline")
 
 # Period Selector
 periods_df = harness.query("SELECT DISTINCT period FROM ledger_monthly ORDER BY period DESC;")
@@ -66,7 +66,7 @@ st.sidebar.markdown("""
 """)
 
 # Main Title
-st.title(f"Tally: Operational Telemetry & Governance ({selected_period})")
+st.title(f"Agent Operations Analytics Pipeline ({selected_period})")
 
 tabs = st.tabs([
     "📈 Value Ledger",
@@ -235,7 +235,7 @@ with tabs[4]:
     st.subheader("⚖️ Interactive Dispute Resolution Console")
     st.markdown("""
     When a team believes their maturity grade is inaccurate, they submit verified evidence.
-    Tally re-runs the exact reproducible query against the updated warehouse state—answering with data, not opinions.
+    The platform re-runs the exact reproducible query against the updated warehouse state—answering with data, not opinions.
     """)
 
     d_team = st.selectbox("Disputing Team:", [

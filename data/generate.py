@@ -1,5 +1,5 @@
 """
-Synthetic Data Generator for Tally (Agent Operations Analytics Pipeline)
+Synthetic Data Generator for Agent Operations Analytics Pipeline
 
 Generates 3 to 6 months of realistic, production-like agent telemetry for 5 distinct teams:
 1. payments-core: Mature, high automation (85%+), passing evals, high approval, low incidents (Target Grade: Level 5 / Level 4)
@@ -441,14 +441,14 @@ class SyntheticDataGenerator:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate synthetic telemetry for Tally Analytics")
+    parser = argparse.ArgumentParser(description="Generate synthetic telemetry for Agent Operations Analytics Pipeline")
     parser.add_argument("--months", type=int, default=4, help="Number of months of historical data (default: 4)")
     parser.add_argument("--seed", type=int, default=42, help="Deterministic random seed (default: 42)")
     parser.add_argument("--output-dir", type=str, default="data/synthetic", help="Output directory path")
     parser.add_argument("--format", type=str, choices=["jsonl", "csv", "parquet", "both"], default="both")
     args = parser.parse_args()
 
-    print(f"--- Generating Tally Synthetic Data ({args.months} months, seed={args.seed}) ---")
+    print(f"--- Generating Synthetic Data ({args.months} months, seed={args.seed}) ---")
     gen = SyntheticDataGenerator(seed=args.seed, months=args.months)
     dataset = gen.generate_all()
     gen.save(dataset, args.output_dir, export_format=args.format)

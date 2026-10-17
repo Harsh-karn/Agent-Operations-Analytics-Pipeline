@@ -162,7 +162,7 @@ class MonthlyReportGenerator:
         actions: List[Dict[str, str]],
     ) -> str:
         lines = [
-            f"# 📊 Tally Operational & Value Ledger Report: {summary['period']}",
+            f"# 📊 Agent Operations Analytics Pipeline - Monthly Report: {summary['period']}",
             f"> *Generated: {datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')} | Philosophy: Value is a measurement, not a claim.*",
             "",
             "## 1. Executive Summary & Value Ledger",

@@ -1,6 +1,6 @@
-# Metrics Definitions: Tally Platform Catalog
+# Metrics Definitions: Agent Operations Analytics Pipeline Catalog
 
-> **Core Philosophy**: *A metric without an agreed-upon definition, explicit provenance, known caveats, and an accountable owner is merely an opinion. Tally mandates strict semantic precision.*
+> **Core Philosophy**: *A metric without an agreed-upon definition, explicit provenance, known caveats, and an accountable owner is merely an opinion. The platform mandates strict semantic precision.*
 
 ---
 
@@ -10,7 +10,7 @@
 > **One-Sentence Definition**: A unit of work absorbed is defined as a completed, approved agent run that successfully replaces a distinct, repeatable task a human operator would otherwise perform manually.
 
 * **Eligibility Rule**: If a run fails, is rejected during human review, or is rolled back, it earns **zero** absorbed minutes. If heavily edited, its absorbed minutes are penalized proportionately.
-* **Accounting Principle**: Gross task time saved is never reported in isolation; Tally subtracts human review and modification time to compute **Net Absorbed Minutes**.
+* **Accounting Principle**: Gross task time saved is never reported in isolation; the pipeline subtracts human review and modification time to compute **Net Absorbed Minutes**.
 
 ### 2. Adoption
 > **One-Sentence Definition**: Adoption is the percentage of eligible team members who actively consume, interact with, or approve agent outputs in a given weekly rolling window without persistent opt-out or snooze behavior.
@@ -141,5 +141,5 @@
 * **Formula**:
   $$\text{Snooze Rate} = \frac{\text{Count of Snooze or Opt-out Actions}}{\text{Total Delivered Dispatches of Kind } K} \times 100$$
 * **Known Caveats**:
-  * If snooze rate exceeds $35\%$, Tally's bundler automatically down-throttles the dispatch frequency of that message category.
+  * If snooze rate exceeds $35\%$, the pipeline bundler automatically down-throttles the dispatch frequency of that message category.
 * **Metric Owner**: Product & User Experience Guild

@@ -37,7 +37,7 @@ from tally.grading import (
 )
 
 app = FastAPI(
-    title="Tally: Agent Operations Analytics & Contact Governance API",
+    title="Agent Operations Analytics Pipeline API",
     version="0.1.0",
     description="Operational measurement, interruption budgeting, value ledger, and defensible maturity grading.",
 )
@@ -71,7 +71,7 @@ class DisputeRequest(BaseModel):
 @app.get("/", tags=["Health"])
 def health_check():
     return {
-        "service": "Tally",
+        "service": "Agent Operations Analytics Pipeline",
         "status": "HEALTHY",
         "philosophy": "The value of the system is a measurement, not a claim, and every grade comes with the SQL that produced it.",
     }

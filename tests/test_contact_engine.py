@@ -1,5 +1,5 @@
 """
-Comprehensive test suite for Tally Contact Engine:
+Comprehensive test suite for Contact Engine:
 - Concurrency stress tests on try_spend() (Zero budget overruns guaranteed)
 - Quiet hours holding behavior
 - Bundler deduplication and stale expiration

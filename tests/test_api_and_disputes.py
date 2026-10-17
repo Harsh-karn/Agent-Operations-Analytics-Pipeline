@@ -1,5 +1,5 @@
 """
-Integration and API tests for Tally:
+Integration and API tests for Agent Operations Analytics Pipeline:
 - FastAPI endpoint verification
 - Show-the-query disclosure and SQL reproducibility test
 - Dispute resolution workflow test
@@ -25,6 +25,7 @@ def test_health_check(client):
     assert res.status_code == 200
     data = res.json()
     assert data["status"] == "HEALTHY"
+    assert data["service"] == "Agent Operations Analytics Pipeline"
     assert "measurement, not a claim" in data["philosophy"]
 
 

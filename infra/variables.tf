@@ -1,7 +1,7 @@
 variable "project_id" {
   type        = string
-  description = "GCP Project ID for Tally deployment"
-  default     = "tally-analytics-prod"
+  description = "GCP Project ID for Agent Operations Analytics Pipeline deployment"
+  default     = "agent-ops-analytics-prod"
 }
 
 variable "region" {
@@ -13,17 +13,17 @@ variable "region" {
 variable "dataset_raw_name" {
   type        = string
   description = "BigQuery dataset name for raw telemetry events and runs"
-  default     = "tally_raw"
+  default     = "agent_ops_raw"
 }
 
 variable "dataset_views_name" {
   type        = string
   description = "BigQuery dataset name for versioned analytical views and grades"
-  default     = "tally_analytics"
+  default     = "agent_ops_analytics"
 }
 
 variable "container_image" {
   type        = string
-  description = "Container image URI for Tally jobs on Cloud Run"
-  default     = "gcr.io/tally-analytics-prod/tally-engine:v0.1.0"
+  description = "Container image URI for pipeline jobs on Cloud Run"
+  default     = "gcr.io/agent-ops-analytics-prod/agent-ops-engine:v0.1.0"
 }

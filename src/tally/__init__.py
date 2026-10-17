@@ -1,5 +1,5 @@
 """
-Tally: Agent Operations Analytics Pipeline
+Agent Operations Analytics Pipeline
 Contact layer, Value ledger, and Defensible team maturity grading.
 """
 

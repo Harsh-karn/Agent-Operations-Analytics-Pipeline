@@ -103,7 +103,7 @@ class MessageComposer:
         if asks_count > 1:
             return ComposerValidationResult(
                 is_valid=False,
-                rejection_reason=f"REJECTED_EXCESSIVE_ASKS: Found {asks_count} asks in dispatch. Tally permits at most 1 ask per message.",
+                rejection_reason=f"REJECTED_EXCESSIVE_ASKS: Found {asks_count} asks in dispatch. The pipeline permits at most 1 ask per message.",
             )
 
         # Adaptive throttling rule: if kind is chronically snoozed, flag or downgrade
@@ -111,7 +111,7 @@ class MessageComposer:
 
         # Build Slack/Email Markdown Body
         body_lines = [
-            f"### 🤖 Tally Dispatch: {dispatch.consolidated_kind.value}",
+            f"### 🤖 Agent Operations Dispatch: {dispatch.consolidated_kind.value}",
             f"**Recipient**: `{dispatch.recipient_id}` | **Urgency**: `{dispatch.highest_urgency}`",
             "",
             "#### 📦 Delivered Value / Payload:",
@@ -133,8 +133,8 @@ class MessageComposer:
             action_buttons.append({"action": "reject", "label": "❌ Reject"})
 
         # Snooze & Opt-Out Controls
-        snooze_url = f"https://tally.internal/contact/snooze?recipient={dispatch.recipient_id}&kind={dispatch.consolidated_kind.value}"
-        opt_out_url = f"https://tally.internal/contact/opt-out?recipient={dispatch.recipient_id}&kind={dispatch.consolidated_kind.value}"
+        snooze_url = f"https://agent-ops.internal/contact/snooze?recipient={dispatch.recipient_id}&kind={dispatch.consolidated_kind.value}"
+        opt_out_url = f"https://agent-ops.internal/contact/opt-out?recipient={dispatch.recipient_id}&kind={dispatch.consolidated_kind.value}"
 
         action_buttons.append({"action": "snooze", "label": "💤 Snooze 7d", "url": snooze_url})
         action_buttons.append({"action": "opt_out", "label": "🚫 Opt-out", "url": opt_out_url})

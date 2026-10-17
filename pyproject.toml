@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tally-analytics"
+name = "agent-operations-analytics-pipeline"
 version = "0.1.0"
-description = "Tally: Agent Operations Analytics Pipeline - Contact layer, Value ledger, and Defensible team maturity grading"
+description = "Agent Operations Analytics Pipeline - Contact layer, Value ledger, and Defensible team maturity grading"
 readme = "README.md"
 authors = [
     { name = "Harsh", email = "harshkarn12345@gmail.com" }
