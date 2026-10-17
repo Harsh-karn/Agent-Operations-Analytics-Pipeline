@@ -32,6 +32,15 @@ class WarehouseHarness:
             counts[table_name] = cnt
         return counts
 
+    def load_views(self, views_dir: str = "warehouse/views"):
+        """Loads all SQL analytical views into DuckDB."""
+        v_path = Path(views_dir)
+        for vf in ["cost_per_run.sql", "ledger_monthly.sql", "team_signals.sql", "maturity_grade.sql"]:
+            target = v_path / vf
+            if target.exists():
+                sql = target.read_text(encoding="utf-8")
+                self.conn.execute(sql)
+
     def query(self, sql: str) -> pd.DataFrame:
         """Executes a SQL query and returns a pandas DataFrame."""
         return self.conn.execute(sql).df()
@@ -45,7 +54,7 @@ class WarehouseHarness:
 
 
 def get_default_harness() -> WarehouseHarness:
-    """Initializes and returns a populated warehouse harness."""
+    """Initializes and returns a populated warehouse harness with raw tables and views."""
     harness = WarehouseHarness()
     data_dir = Path("data/synthetic")
     if not any(data_dir.glob("*.parquet")):
@@ -54,4 +63,5 @@ def get_default_harness() -> WarehouseHarness:
         dataset = gen.generate_all()
         gen.save(dataset, str(data_dir), export_format="parquet")
     harness.load_from_parquet(str(data_dir))
+    harness.load_views()
     return harness
