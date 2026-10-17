@@ -11,7 +11,7 @@ Exposes:
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from fastapi import FastAPI, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
@@ -19,7 +19,6 @@ from tally.contact.budget import (
     ContactBudgetManager,
     MessageKind,
     SpendResult,
-    SpendStatus,
 )
 from tally.contact.bundler import (
     CandidateMessage,

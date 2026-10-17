@@ -2,7 +2,6 @@
 Unit tests for Synthetic Data Generator and Seeded Known Facts
 """
 
-import pytest
 from data.generate import SyntheticDataGenerator, SEED_COMPLIANCE_AUTOMATED_WORKFLOWS
 from data.loader import WarehouseHarness
 

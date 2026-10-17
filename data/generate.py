@@ -14,10 +14,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
-import math
-import os
 import random
-import uuid
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -36,7 +33,7 @@ class SyntheticDataGenerator:
         self.seed = seed
         self.months = months
         random.seed(seed)
-        
+
         # Calculate time horizon
         self.end_date = datetime.datetime(2026, 10, 15, 12, 0, 0, tzinfo=datetime.timezone.utc)
         self.start_date = self.end_date - datetime.timedelta(days=months * 30)
@@ -210,7 +207,6 @@ class SyntheticDataGenerator:
         team_agents = {spec["id"]: [a for a in agents if a["team_id"] == spec["id"]] for spec in self.team_specs}
         team_workflows = {spec["id"]: [w for w in workflows if w["team_id"] == spec["id"]] for spec in self.team_specs}
         team_people = {spec["id"]: [p for p in people if p["team_id"] == spec["id"]] for spec in self.team_specs}
-        agent_baselines_map = {b["agent_id"]: b["baseline_minutes"] for b in baselines}
 
         # 2. Synthesize Runs, Events, Approvals, Incidents, and Contact Attempts
         num_weeks = int((self.end_date - self.start_date).days / 7)
@@ -258,7 +254,7 @@ class SyntheticDataGenerator:
                     pricing = MODEL_PRICING[model]
                     prompt_tokens = random.randint(800, 4500)
                     completion_tokens = random.randint(200, 2500)
-                    
+
                     # Intentional anomaly injection (e.g. 1 in 150 runs has huge tokens)
                     if random.random() < 0.007:
                         prompt_tokens *= 10
@@ -435,7 +431,7 @@ class SyntheticDataGenerator:
                     df = pd.DataFrame(rows)
                     df.to_parquet(parquet_file, index=False)
                     print(f"Exported {len(rows):>6} rows to {parquet_file}")
-                except Exception as e:
+                except Exception:
                     # Non-fatal if pyarrow not yet ready
                     pass
 

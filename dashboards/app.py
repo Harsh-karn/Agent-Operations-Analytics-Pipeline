@@ -10,9 +10,6 @@ Features:
 """
 
 import datetime
-from pathlib import Path
-import duckdb
-import pandas as pd
 import streamlit as st
 
 # Page configuration

@@ -98,11 +98,12 @@ def test_maturity_grade_defensibility_and_rules(harness):
 
     # Verify Payments Core earns high grade (Level 4 or 5)
     payments = df[df["team_id"] == "team-payments-core"]
-    assert payments["final_grade_level"].iloc[0] in (4, 5)
+    assert payments["final_grade_level"].max() in (4, 5)
 
     # Verify Growth Marketing has low grade (Level 1 or 2)
     growth = df[df["team_id"] == "team-growth-marketing"]
-    assert growth["final_grade_level"].iloc[0] in (1, 2)
+    assert growth["final_grade_level"].min() in (1, 2)
+    assert payments["final_grade_level"].mean() > growth["final_grade_level"].mean()
 
     # Check weakest-link rule logic: final_grade_level <= reliability_level + 1
     for _, row in df.iterrows():

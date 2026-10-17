@@ -9,8 +9,7 @@ from __future__ import annotations
 
 import datetime
 from enum import Enum
-from pathlib import Path
-from typing import NamedTuple, Optional
+from typing import Optional
 import sqlite3
 from zoneinfo import ZoneInfo
 from pydantic import BaseModel

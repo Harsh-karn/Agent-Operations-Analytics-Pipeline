@@ -7,9 +7,8 @@ instance for local testing, view verification, and zero-GCP-dependency execution
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import duckdb
 import pandas as pd
 

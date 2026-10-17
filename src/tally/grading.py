@@ -13,7 +13,7 @@ import datetime
 import hashlib
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from data.loader import WarehouseHarness, get_default_harness
 
@@ -139,10 +139,6 @@ class GradeService:
         Discloses the 100% reproducible SQL query string that produced the team's grade.
         Enables any team to copy, inspect, and execute the exact logic in BigQuery or DuckDB.
         """
-        views_dir = Path("warehouse/views")
-        grade_sql = (views_dir / "maturity_grade.sql").read_text(encoding="utf-8")
-        signals_sql = (views_dir / "team_signals.sql").read_text(encoding="utf-8")
-
         standalone_query = f"""-- =====================================================================
 -- AGENT OPERATIONS ANALYTICS AUDIT QUERY: Defensible Grade for {team_id} (Period: {period})
 -- Rules Version: v1.0.0
