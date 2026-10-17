@@ -145,3 +145,59 @@ def test_api_warehouse_ledger_and_anomalies(client):
     anomalies = a_res.json()
     assert len(anomalies) > 0
     assert anomalies[0]["cost_ratio_to_median"] >= 3.0
+
+
+def test_api_sql_injection_rejection(client):
+    """Verify that malicious path parameters and evidence payloads are safely blocked."""
+    # 1. Path injection attempt in team_id
+    bad_url = "/grades/team-1'%20OR%201=1--/2026-09"
+    res = client.get(bad_url)
+    assert res.status_code == 422  # Blocked by FastAPI path regex validation
+
+    # 2. Path injection attempt in period
+    bad_period_url = "/grades/team-payments-core/2026-09';DROP TABLE runs;--"
+    res2 = client.get(bad_period_url)
+    assert res2.status_code == 422
+
+    # 3. Malicious evidence payload
+    malicious_evidence = {
+        "dispute_note": "Exploit attempt",
+        "evidence": {
+            "add_automated_workflow": {
+                "workflow_id": "wf-exploit'; DROP TABLE runs; --",
+                "name": "Exploit Workflow"
+            }
+        }
+    }
+    with pytest.raises(ValueError):
+        from tally.api import grade_service
+        grade_service.dispute_grade(
+            team_id="team-growth-marketing",
+            period="2026-09",
+            dispute_note=malicious_evidence["dispute_note"],
+            evidence=malicious_evidence["evidence"],
+        )
+
+
+def test_cli_commands():
+    """Verify that the Typer CLI app commands execute properly without error."""
+    from typer.testing import CliRunner
+    from tally.cli import app as cli_app
+
+    runner = CliRunner()
+
+    # 1. Help
+    res_help = runner.invoke(cli_app, ["--help"])
+    assert res_help.exit_code == 0
+    assert "Agent Operations Analytics Pipeline CLI" in res_help.output
+
+    # 2. Nightly grade
+    res_grade = runner.invoke(cli_app, ["nightly-grade", "--period", "2026-09"])
+    assert res_grade.exit_code == 0
+    assert "Executing Nightly Grading Batch" in res_grade.output
+    assert "Successfully scored 5 teams" in res_grade.output
+
+    # 3. Inspect anomalies
+    res_anom = runner.invoke(cli_app, ["inspect-anomalies", "--limit", "2"])
+    assert res_anom.exit_code == 0
+    assert "Cost Anomalies" in res_anom.output

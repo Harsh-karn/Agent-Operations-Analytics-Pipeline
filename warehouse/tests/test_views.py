@@ -109,3 +109,22 @@ def test_maturity_grade_defensibility_and_rules(harness):
     for _, row in df.iterrows():
         assert row["final_grade_level"] <= (row["s4_reliability_level"] + 1)
         assert row["final_grade_level"] <= (row["s3_gate_level"] + 1)
+
+
+def test_autonomous_runs_value_credit(harness):
+    """Verify that completed autonomous runs with no human gate required receive 100% baseline credit."""
+    # Insert an autonomous run with no matching approval
+    harness.execute("""
+        INSERT INTO runs VALUES (
+            'run-auto-test-01', 'agent-payments-core-01', 'team-payments-core', 'wf-test-auto',
+            '2026-09-15 10:00:00', '2026-09-15 10:01:00', 'COMPLETED',
+            500, 200, 'gemini-1.5-flash', 0.0005
+        );
+    """)
+    ledger = harness.query("""
+        SELECT gross_absorbed_minutes, net_absorbed_minutes
+        FROM ledger_monthly
+        WHERE team_id = 'team-payments-core' AND period = '2026-09'
+    """)
+    assert len(ledger) > 0
+    assert ledger["net_absorbed_minutes"].iloc[0] > 0

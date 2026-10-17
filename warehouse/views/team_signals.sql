@@ -11,7 +11,7 @@
 CREATE OR REPLACE VIEW team_signals AS
 WITH periods_teams AS (
     SELECT DISTINCT
-        SUBSTRING(start_time, 1, 7) AS period,
+        SUBSTR(CAST(start_time AS STRING), 1, 7) AS period,
         team_id
     FROM runs
 ),
@@ -40,7 +40,7 @@ eval_stats AS (
 ),
 gate_stats AS (
     SELECT
-        SUBSTRING(r.start_time, 1, 7) AS period,
+        SUBSTR(CAST(r.start_time AS STRING), 1, 7) AS period,
         r.team_id,
         COUNT(a.approval_id) AS total_approval_requests,
         COUNT(CASE WHEN a.decision IN ('APPROVED_AS_IS', 'APPROVED_WITH_EDITS') THEN 1 END) AS total_approvals,
@@ -52,30 +52,24 @@ gate_stats AS (
         ROUND(MEDIAN(a.human_review_minutes), 1) AS median_approval_minutes
     FROM runs r
     JOIN approvals a ON r.run_id = a.run_id
-    GROUP BY SUBSTRING(r.start_time, 1, 7), r.team_id
+    GROUP BY SUBSTR(CAST(r.start_time AS STRING), 1, 7), r.team_id
 ),
 reliability_stats AS (
     SELECT
-        SUBSTRING(r.start_time, 1, 7) AS period,
+        SUBSTR(CAST(r.start_time AS STRING), 1, 7) AS period,
         r.team_id,
-        COUNT(r.run_id) AS total_runs,
-        COUNT(CASE WHEN r.status IN ('FAILED', 'ROLLED_BACK') THEN 1 END) AS failed_runs,
-        COALESCE(inc.incident_count, 0) AS incident_count,
+        COUNT(DISTINCT r.run_id) AS total_runs,
+        -- Non-redundant failure count: a failed run that also triggered an incident is counted once
+        COUNT(DISTINCT CASE WHEN r.status IN ('FAILED', 'ROLLED_BACK') OR i.incident_id IS NOT NULL THEN r.run_id END) AS failed_or_incident_runs,
+        COUNT(DISTINCT i.incident_id) AS incident_count,
         ROUND(
-            ((COUNT(CASE WHEN r.status IN ('FAILED', 'ROLLED_BACK') THEN 1 END) + COALESCE(inc.incident_count, 0)) * 100.0) /
-            NULLIF(COUNT(r.run_id), 0),
+            (COUNT(DISTINCT CASE WHEN r.status IN ('FAILED', 'ROLLED_BACK') OR i.incident_id IS NOT NULL THEN r.run_id END) * 100.0) /
+            NULLIF(COUNT(DISTINCT r.run_id), 0),
             2
         ) AS failure_rate_per_100
     FROM runs r
-    LEFT JOIN (
-        SELECT
-            SUBSTRING(occurred_at, 1, 7) AS period,
-            team_id,
-            COUNT(incident_id) AS incident_count
-        FROM incidents
-        GROUP BY SUBSTRING(occurred_at, 1, 7), team_id
-    ) inc ON SUBSTRING(r.start_time, 1, 7) = inc.period AND r.team_id = inc.team_id
-    GROUP BY SUBSTRING(r.start_time, 1, 7), r.team_id, inc.incident_count
+    LEFT JOIN incidents i ON r.run_id = i.run_id
+    GROUP BY SUBSTR(CAST(r.start_time AS STRING), 1, 7), r.team_id
 ),
 adoption_stats AS (
     SELECT
@@ -92,14 +86,14 @@ adoption_stats AS (
     JOIN people p ON pt.team_id = p.team_id
     LEFT JOIN (
         SELECT DISTINCT
-            SUBSTRING(r.start_time, 1, 7) AS period,
+            SUBSTR(CAST(r.start_time AS STRING), 1, 7) AS period,
             ap.person_id
         FROM runs r
         JOIN approvals ap ON r.run_id = ap.run_id
     ) a ON pt.period = a.period AND p.person_id = a.person_id
     LEFT JOIN (
         SELECT
-            SUBSTRING(ca.sent_at, 1, 7) AS period,
+            SUBSTR(CAST(ca.sent_at AS STRING), 1, 7) AS period,
             pe.team_id,
             ROUND(
                 (COUNT(CASE WHEN ca.snoozed = TRUE THEN 1 END) * 100.0) /
@@ -108,7 +102,7 @@ adoption_stats AS (
             ) AS snooze_rate_pct
         FROM contact_attempts ca
         JOIN people pe ON ca.person_id = pe.person_id
-        GROUP BY SUBSTRING(ca.sent_at, 1, 7), pe.team_id
+        GROUP BY SUBSTR(CAST(ca.sent_at AS STRING), 1, 7), pe.team_id
     ) cnt ON pt.period = cnt.period AND pt.team_id = cnt.team_id
     GROUP BY pt.period, pt.team_id, cnt.snooze_rate_pct
 )

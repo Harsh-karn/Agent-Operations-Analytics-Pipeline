@@ -9,13 +9,30 @@ Implements Phase 7 & 8:
 
 from __future__ import annotations
 
+import argparse
 import datetime
 import hashlib
 from pathlib import Path
+import re
+import sys
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 
 from data.loader import WarehouseHarness, get_default_harness
+
+
+def _validate_identifier(val: str, name: str = "identifier") -> str:
+    """Ensures identifiers conform strictly to alphanumeric and hyphens/underscores to prevent injection."""
+    if not re.match(r"^[a-zA-Z0-9_\-]+$", str(val)):
+        raise ValueError(f"Invalid {name}: contains disallowed characters: {val}")
+    return str(val)
+
+
+def _validate_period(period: str) -> str:
+    """Validates period string matches YYYY-MM format."""
+    if not re.match(r"^\d{4}-\d{2}$", str(period)):
+        raise ValueError(f"Invalid period format: {period}. Expected YYYY-MM")
+    return str(period)
 
 
 class TeamGradeReport(BaseModel):
@@ -77,13 +94,15 @@ class GradeService:
 
     def get_team_grade(self, team_id: str, period: str) -> Optional[TeamGradeReport]:
         """Calculates and returns the defensible maturity grade for a team in a given period."""
-        query = f"""
+        _validate_identifier(team_id, "team_id")
+        _validate_period(period)
+        query = """
             SELECT *
             FROM maturity_grade
-            WHERE team_id = '{team_id}' AND period = '{period}'
+            WHERE team_id = ? AND period = ?
             LIMIT 1;
         """
-        df = self.harness.query(query)
+        df = self.harness.conn.execute(query, [team_id, period]).df()
         if df.empty:
             return None
 
@@ -139,6 +158,8 @@ class GradeService:
         Discloses the 100% reproducible SQL query string that produced the team's grade.
         Enables any team to copy, inspect, and execute the exact logic in BigQuery or DuckDB.
         """
+        _validate_identifier(team_id, "team_id")
+        _validate_period(period)
         standalone_query = f"""-- =====================================================================
 -- AGENT OPERATIONS ANALYTICS AUDIT QUERY: Defensible Grade for {team_id} (Period: {period})
 -- Rules Version: v1.0.0
@@ -200,19 +221,22 @@ WHERE team_id = '{team_id}' AND period = '{period}';"""
         3. Reruns the exact SQL query against updated state.
         4. Issues immutable audit trail.
         """
+        _validate_identifier(team_id, "team_id")
+        _validate_period(period)
         pre_grade = self.get_team_grade(team_id, period)
         prev_level = pre_grade.final_grade_level if pre_grade else 1
 
-        # Apply Evidence if valid
+        # Apply Evidence if valid - parameterized execution to prevent SQL injection
         evidence_applied = {}
         if "add_automated_workflow" in evidence:
             wf_info = evidence["add_automated_workflow"]
-            wf_id = wf_info.get("workflow_id", f"wf-{team_id}-disputed-{int(datetime.datetime.now().timestamp())}")
-            wf_name = wf_info.get("name", "Dispute Remediated Workflow")
-            self.harness.execute(f"""
+            wf_id = str(wf_info.get("workflow_id", f"wf-{team_id}-disputed-{int(datetime.datetime.now().timestamp())}"))
+            wf_name = str(wf_info.get("name", "Dispute Remediated Workflow"))
+            _validate_identifier(wf_id, "workflow_id")
+            self.harness.conn.execute("""
                 INSERT INTO workflows (workflow_id, team_id, name, is_automated, cadence, description)
-                VALUES ('{wf_id}', '{team_id}', '{wf_name}', TRUE, 'DAILY', 'Added via validated dispute adjudication');
-            """)
+                VALUES (?, ?, ?, TRUE, 'DAILY', 'Added via validated dispute adjudication');
+            """, [wf_id, team_id, wf_name])
             evidence_applied["added_workflow_id"] = wf_id
 
         # Re-evaluate
@@ -243,3 +267,31 @@ WHERE team_id = '{team_id}' AND period = '{period}';"""
         )
         self._disputes_log.append(record.model_dump())
         return record
+
+
+def main():
+    """CLI execution for Cloud Run and cron jobs (infra/main.tf:78)."""
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
+    parser = argparse.ArgumentParser(description="Execute nightly maturity grading and view refresh")
+    parser.add_argument("--execute-nightly", action="store_true", help="Execute nightly view refresh and grading batch")
+    parser.add_argument("--period", type=str, default=None, help="Optional reporting period in YYYY-MM")
+    args = parser.parse_args()
+
+    service = GradeService()
+    now_period = args.period or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m")
+    print(f"--- Executing Nightly Grading Batch (Period: {now_period}) ---")
+    teams_df = service.harness.query("SELECT DISTINCT team_id FROM teams ORDER BY team_id;")
+    graded_count = 0
+    for _, row in teams_df.iterrows():
+        t_id = row["team_id"]
+        report = service.get_team_grade(t_id, now_period)
+        if report:
+            print(f"  Team: {report.team_name:<25} | Grade: {report.grade_badge:<6} (Level {report.final_grade_level}) | Score: {report.raw_weighted_score}")
+            graded_count += 1
+    print(f"--- Nightly grading batch completed. Successfully scored {graded_count} teams. ---")
+
+
+if __name__ == "__main__":
+    main()

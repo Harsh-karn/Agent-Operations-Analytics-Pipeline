@@ -11,8 +11,10 @@ Exposes:
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
 from typing import Any, Dict, Optional
-from fastapi import FastAPI, HTTPException, Query, status
+from fastapi import FastAPI, HTTPException, Path as FastAPIPath, Query, status
 from pydantic import BaseModel, Field
 
 from tally.contact.budget import (
@@ -41,8 +43,12 @@ app = FastAPI(
     description="Operational measurement, interruption budgeting, value ledger, and defensible maturity grading.",
 )
 
-# Global in-memory / state singletons
-budget_mgr = ContactBudgetManager(db_path=":memory:")
+# Persistent state storage configuration (Fix for OPS-01)
+_db_env = os.getenv("CONTACT_DATABASE_PATH", "data/contact_budget.db")
+if _db_env != ":memory:":
+    Path(_db_env).parent.mkdir(parents=True, exist_ok=True)
+
+budget_mgr = ContactBudgetManager(db_path=_db_env)
 bundler = MessageBundler()
 snooze_tracker = SnoozeTracker()
 composer = MessageComposer(snooze_tracker=snooze_tracker)
@@ -152,7 +158,10 @@ def flush_and_compose(recipient_id: str):
 # =====================================================================
 
 @app.get("/grades/{team_id}/{period}", response_model=TeamGradeReport, tags=["Maturity Grades"])
-def get_grade(team_id: str, period: str):
+def get_grade(
+    team_id: str = FastAPIPath(..., pattern=r"^[a-zA-Z0-9_\-]+$", description="Team identifier"),
+    period: str = FastAPIPath(..., pattern=r"^\d{4}-\d{2}$", description="Period in YYYY-MM format"),
+):
     """Returns computed team maturity grade, 5 signals, and rule breakdown."""
     grade = grade_service.get_team_grade(team_id, period)
     if not grade:
@@ -164,7 +173,10 @@ def get_grade(team_id: str, period: str):
 
 
 @app.get("/grades/{team_id}/{period}/query", response_model=GradeQueryDisclosure, tags=["Maturity Grades"])
-def get_grade_query(team_id: str, period: str):
+def get_grade_query(
+    team_id: str = FastAPIPath(..., pattern=r"^[a-zA-Z0-9_\-]+$", description="Team identifier"),
+    period: str = FastAPIPath(..., pattern=r"^\d{4}-\d{2}$", description="Period in YYYY-MM format"),
+):
     """
     Returns the exact immutable SQL query string and rule hash that produced the grade.
     The answer to disputes is data and verifiable queries, not opinions.
@@ -173,7 +185,11 @@ def get_grade_query(team_id: str, period: str):
 
 
 @app.post("/grades/{team_id}/{period}/dispute", response_model=DisputeResolutionResult, tags=["Maturity Grades"])
-def dispute_grade(team_id: str, period: str, req: DisputeRequest):
+def dispute_grade(
+    req: DisputeRequest,
+    team_id: str = FastAPIPath(..., pattern=r"^[a-zA-Z0-9_\-]+$", description="Team identifier"),
+    period: str = FastAPIPath(..., pattern=r"^\d{4}-\d{2}$", description="Period in YYYY-MM format"),
+):
     """
     Submits a grade dispute note with evidence.
     Reruns the exact SQL query against updated source data and issues an audited resolution.

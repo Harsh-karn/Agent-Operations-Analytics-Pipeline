@@ -5,13 +5,29 @@
 -- =====================================================================
 
 CREATE OR REPLACE VIEW ledger_monthly AS
-WITH run_level_ledger AS (
+WITH deduped_baselines AS (
+    SELECT
+        agent_id,
+        AVG(baseline_minutes) AS baseline_minutes,
+        MAX(confidence) AS confidence
+    FROM agent_baselines
+    GROUP BY agent_id
+),
+deduped_approvals AS (
+    SELECT
+        run_id,
+        MAX(decision) AS decision,
+        SUM(human_review_minutes) AS human_review_minutes
+    FROM approvals
+    GROUP BY run_id
+),
+run_level_ledger AS (
     SELECT
         r.run_id,
         r.agent_id,
         r.team_id,
         r.cost_usd,
-        SUBSTRING(r.start_time, 1, 7) AS period,
+        SUBSTR(CAST(r.start_time AS STRING), 1, 7) AS period,
         b.baseline_minutes,
         b.confidence,
         CASE
@@ -19,18 +35,19 @@ WITH run_level_ledger AS (
             WHEN b.confidence = 'MEDIUM' THEN 0.25
             ELSE 0.40
         END AS uncertainty_factor,
-        COALESCE(a.decision, 'REJECTED') AS approval_decision,
+        COALESCE(a.decision, 'NO_GATE_AUTONOMOUS') AS approval_decision,
         COALESCE(a.human_review_minutes, 0.0) AS human_review_minutes,
-        -- Approval Factor: 1.0 for as-is, 0.5 for edits, 0.0 for rejected/failed
+        -- Approval Factor: 1.0 for as-is or autonomous, 0.5 for edits, 0.0 for rejected/failed
         CASE
             WHEN r.status != 'COMPLETED' THEN 0.0
+            WHEN a.decision IS NULL THEN 1.0
             WHEN a.decision = 'APPROVED_AS_IS' THEN 1.0
             WHEN a.decision = 'APPROVED_WITH_EDITS' THEN 0.5
             ELSE 0.0
         END AS approval_factor,
         -- Gross Minutes Absorbed
         CASE
-            WHEN r.status = 'COMPLETED' AND a.decision = 'APPROVED_AS_IS' THEN b.baseline_minutes
+            WHEN r.status = 'COMPLETED' AND (a.decision IS NULL OR a.decision = 'APPROVED_AS_IS') THEN b.baseline_minutes
             WHEN r.status = 'COMPLETED' AND a.decision = 'APPROVED_WITH_EDITS' THEN b.baseline_minutes * 0.5
             ELSE 0.0
         END AS gross_minutes_absorbed,
@@ -38,7 +55,7 @@ WITH run_level_ledger AS (
         GREATEST(
             0.0,
             CASE
-                WHEN r.status = 'COMPLETED' AND a.decision = 'APPROVED_AS_IS'
+                WHEN r.status = 'COMPLETED' AND (a.decision IS NULL OR a.decision = 'APPROVED_AS_IS')
                     THEN (b.baseline_minutes - COALESCE(a.human_review_minutes, 0.0))
                 WHEN r.status = 'COMPLETED' AND a.decision = 'APPROVED_WITH_EDITS'
                     THEN ((b.baseline_minutes * 0.5) - COALESCE(a.human_review_minutes, 0.0))
@@ -46,8 +63,8 @@ WITH run_level_ledger AS (
             END
         ) AS net_minutes_absorbed
     FROM runs r
-    JOIN agent_baselines b ON r.agent_id = b.agent_id
-    LEFT JOIN approvals a ON r.run_id = a.run_id
+    JOIN deduped_baselines b ON r.agent_id = b.agent_id
+    LEFT JOIN deduped_approvals a ON r.run_id = a.run_id
 )
 SELECT
     period,

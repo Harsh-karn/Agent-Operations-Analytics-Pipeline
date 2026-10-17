@@ -153,13 +153,14 @@ class SyntheticDataGenerator:
                 })
 
             # People (4 per team)
+            team_slug = team_id.replace("team-", "")
             for p_idx in range(1, 5):
-                p_id = f"usr-{team_id[-8:]}-{p_idx:02d}"
+                p_id = f"usr-{team_slug}-{p_idx:02d}"
                 people.append({
                     "person_id": p_id,
                     "team_id": team_id,
                     "name": f"Operator {p_idx} ({spec['name']})",
-                    "email": f"operator.{p_idx}.{team_id[-8:]}@enterprise.internal",
+                    "email": f"operator.{p_idx}.{team_slug}@enterprise.internal",
                     "timezone": random.choice(["America/New_York", "America/Los_Angeles", "Europe/London"]),
                     "quiet_hours_start": 19,
                     "quiet_hours_end": 8,
@@ -168,7 +169,7 @@ class SyntheticDataGenerator:
 
             # Agents (3 per team)
             for a_idx in range(1, 4):
-                a_id = f"agent-{team_id[-8:]}-{a_idx:02d}"
+                a_id = f"agent-{team_slug}-{a_idx:02d}"
                 agents.append({
                     "agent_id": a_id,
                     "team_id": team_id,

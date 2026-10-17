@@ -44,6 +44,7 @@ dev = [
 ]
 
 [project.scripts]
+agent-ops = "tally.cli:app"
 tally = "tally.cli:app"
 
 [tool.setuptools.packages.find]

@@ -18,7 +18,7 @@ WITH run_durations AS (
         (r.prompt_tokens + r.completion_tokens) AS total_tokens,
         r.model,
         r.cost_usd,
-        ROUND(EXTRACT(EPOCH FROM (r.end_time::TIMESTAMP - r.start_time::TIMESTAMP)), 2) AS duration_seconds
+        ROUND(date_diff('second', CAST(r.start_time AS TIMESTAMP), CAST(r.end_time AS TIMESTAMP)), 2) AS duration_seconds
     FROM runs r
 ),
 agent_benchmarks AS (

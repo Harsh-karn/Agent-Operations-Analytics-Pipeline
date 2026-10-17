@@ -1,5 +1,5 @@
 # 📊 Agent Operations Analytics Pipeline - Monthly Report: 2026-09
-> *Generated: 2026-10-17 18:59 UTC | Philosophy: Value is a measurement, not a claim.*
+> *Generated: 2026-10-17 20:03 UTC | Philosophy: Value is a measurement, not a claim.*
 
 ## 1. Executive Summary & Value Ledger
 - **Work Absorbed (Expected)**: **718.6 net hours** *(Confidence Range: 596.4h – 840.8h)*
@@ -11,27 +11,27 @@
 ## 2. Team Maturity Grades (Rules v1.0.0)
 | Team | Final Grade | Score | Auto Cov | Failure / 100 | Gate Approval | Safety Capped? |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Payments Core** | `SILVER` (L4) | 4.60 | 87.5% | 4.1 | 97.5% | ⚠️ Capped by Reliability/Gate |
-| **Compliance & Risk** | `BRONZE` (L3) | 4.20 | 80.0% | 7.6 | 90.1% | ⚠️ Capped by Reliability/Gate |
-| **Data Platform** | `BRONZE` (L3) | 3.30 | 45.0% | 9.7 | 73.2% | No |
-| **Customer Operations** | `AMBER` (L2) | 2.65 | 60.0% | 22.9 | 67.0% | ⚠️ Capped by Reliability/Gate |
-| **Growth & Marketing** | `AMBER` (L2) | 1.85 | 16.7% | 34.6 | 52.2% | No |
+| **Payments Core** | `SILVER` (L4) | 4.60 | 87.5% | 3.8 | 97.5% | ⚠️ Capped by Reliability/Gate |
+| **Compliance & Risk** | `BRONZE` (L3) | 4.20 | 80.0% | 6.1 | 90.1% | ⚠️ Capped by Reliability/Gate |
+| **Data Platform** | `BRONZE` (L3) | 3.30 | 45.0% | 6.2 | 73.2% | No |
+| **Customer Operations** | `AMBER` (L2) | 2.65 | 60.0% | 12.8 | 67.0% | ⚠️ Capped by Reliability/Gate |
+| **Growth & Marketing** | `AMBER` (L2) | 1.85 | 16.7% | 19.2 | 52.2% | No |
 
 ## 3. Top 3 Most Expensive Runs
 | Run ID | Agent ID | Model | Tokens | Cost (USD) | Ratio to Median | Anomaly? |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| `run-005604` | `agent-arketing-03` | `gpt-4o` | 53,070 | $0.3718 | 15.3x | 🚨 YES |
-| `run-003562` | `agent-omer-ops-03` | `claude-3-5-sonnet` | 37,180 | $0.3093 | 13.2x | 🚨 YES |
-| `run-000981` | `agent-nts-core-03` | `claude-3-5-sonnet` | 44,036 | $0.2854 | 13.1x | 🚨 YES |
+| `run-005604` | `agent-growth-marketing-03` | `gpt-4o` | 53,070 | $0.3718 | 15.3x | 🚨 YES |
+| `run-003562` | `agent-customer-ops-03` | `claude-3-5-sonnet` | 37,180 | $0.3093 | 13.2x | 🚨 YES |
+| `run-000981` | `agent-payments-core-03` | `claude-3-5-sonnet` | 44,036 | $0.2854 | 13.1x | 🚨 YES |
 
 ## 4. High-Friction Agents (Falling Approval / High Review)
 | Agent ID | Team ID | Total Runs | Approval Rate | Avg Review Time |
 | :--- | :--- | :---: | :---: | :---: |
-| `agent-arketing-03` | `team-growth-marketing` | 43 | 41.9% | 25.7m |
-| `agent-arketing-02` | `team-growth-marketing` | 37 | 56.8% | 25.9m |
-| `agent-arketing-01` | `team-growth-marketing` | 35 | 60.0% | 27.6m |
-| `agent-omer-ops-01` | `team-customer-ops` | 140 | 60.7% | 18.0m |
-| `agent-platform-03` | `team-data-platform` | 47 | 63.8% | 12.1m |
+| `agent-growth-marketing-03` | `team-growth-marketing` | 43 | 41.9% | 25.7m |
+| `agent-growth-marketing-02` | `team-growth-marketing` | 37 | 56.8% | 25.9m |
+| `agent-growth-marketing-01` | `team-growth-marketing` | 35 | 60.0% | 27.6m |
+| `agent-customer-ops-01` | `team-customer-ops` | 140 | 60.7% | 18.0m |
+| `agent-data-platform-03` | `team-data-platform` | 47 | 63.8% | 12.1m |
 
 ## 5. Suggested Decisions for Immediate Action
 ### 🎯 Action 1: Token Context Capping & Model Routing Migration
