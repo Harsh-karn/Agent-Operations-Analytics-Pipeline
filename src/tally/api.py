@@ -68,6 +68,7 @@ class DisputeRequest(BaseModel):
 
 
 @app.get("/", tags=["Health"])
+@app.get("/health", tags=["Health"])
 def health_check():
     return {
         "service": "Agent Operations Analytics Pipeline",
