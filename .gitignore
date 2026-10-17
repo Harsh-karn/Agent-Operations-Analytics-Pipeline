@@ -61,6 +61,8 @@ desktop.ini
 *.sqlite3
 data/output/
 data/cache/
+data/synthetic/*.csv
+data/synthetic/*.jsonl
 reports/*.pdf
 scratch/
 
